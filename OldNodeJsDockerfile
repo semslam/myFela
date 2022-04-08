@@ -1,0 +1,20 @@
+FROM node:10-alpine
+
+# RUN mkdir -p /home/node/felaui/node_modules && chown -R node:node /home/node/felaui
+
+# WORKDIR /home/node/felaui
+
+WORKDIR /usr/src/felaui
+
+COPY package*.json ./
+
+# USER node
+
+RUN npm install
+
+# COPY --chown=node:node . .
+COPY . .
+
+EXPOSE 3000
+    
+CMD ["npm", "run", "start"]

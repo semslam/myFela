@@ -1,0 +1,38 @@
+# This is a sample build configuration for Docker.
+# Check our guides at https://confluence.atlassian.com/x/O1toN for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: atlassian/default-image:2
+
+pipelines:
+  branches:
+    master:
+      - step:
+          services:
+            - docker
+          script: # Modify the commands below to build your repository.
+            # Set $DOCKER_HUB_USERNAME and $DOCKER_HUB_PASSWORD as environment variables in repository settings
+            # - export IMAGE_NAME=myfela/felaui:$BITBUCKET_COMMIT
+            - export IMAGE_NAME=myfela/felaui:latest
+            #- export DOCKER_HUB_USERNAME=myfela
+            #- export DOCKER_HUB_PASSWORD=!!Fela2019
+
+            # build the Docker image (this will use the Dockerfile in the root of the repo)
+            - docker build -t $IMAGE_NAME .
+            # authenticate with the Docker Hub registry
+            - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+            # push the new Docker image to the Docker registry
+            - docker push $IMAGE_NAME
+    # topeojo:
+    #   - step:
+    #       services:
+    #         - docker
+    #       script:
+    #         - export IMAGE_NAME=myfela/felaui:test_CICD_deploy
+    #         - docker build -t $IMAGE_NAME .
+    #         - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+    #         - docker push $IMAGE_NAME
+    #         - eval `ssh-agent -s`
+    #         - cat script.sh | ssh root@178.128.234.34
+    #         - echo "Done!"
